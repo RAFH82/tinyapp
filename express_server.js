@@ -120,7 +120,7 @@ app.get("/u/:shortURL", (req, res) => {
   if (longURL) {
     res.redirect(longURL);
   } else {
-    res.status(404).send("Error, link not found");
+    res.status(404).send("Error 404: link not found");
   }
 });
 
