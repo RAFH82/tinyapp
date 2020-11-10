@@ -94,7 +94,6 @@ app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
-
 // generates new shortURL
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
@@ -104,6 +103,11 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls_new", (req, res) => {
   res.render("urls_new");
+});
+
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
 });
 
 app.get("/urls/:shortURL", (req, res) => {
