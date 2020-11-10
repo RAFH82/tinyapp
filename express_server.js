@@ -74,7 +74,7 @@ function generateRandomString() {
   const indexFour = Math.floor(Math.random() * 63);
   const indexFive = Math.floor(Math.random() * 63);
   const indexSix = Math.floor(Math.random() * 63);
-  let outputStr = `${sourceArr[indexOne]}${sourceArr[indexTwo]}${sourceArr[indexFour]}${sourceArr[indexFive]}${sourceArr[indexSix]}`;
+  let outputStr = `${sourceArr[indexOne]}${sourceArr[indexTwo]}${sourceArr[indexThree]}${sourceArr[indexFour]}${sourceArr[indexFive]}${sourceArr[indexSix]}`;
   return outputStr;
 }
 
@@ -86,30 +86,27 @@ const urlDatabase = {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
+// GET If typed by mistake, redirect to url_index
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/urls");
 });
 
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
+// GET default urls from Database object
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
-// generates new shortURL
-app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);
-});
 
+// GET create new shortURL
 app.get("/urls_new", (req, res) => {
   res.render("urls_new");
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
-});
-
+// GET shows newly created shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
@@ -118,7 +115,16 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-// redirect to long url
+// GET edit existing shortURL
+app.get("/urls/:shortURL/update", (req, res) => {
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL],
+  };
+  res.render("urls_show", templateVars);
+});
+
+// GET redirect to longURL
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   if (longURL) {
@@ -128,14 +134,25 @@ app.get("/u/:shortURL", (req, res) => {
   }
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+// POST generates new shortURL
+app.post("/urls", (req, res) => {
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
+// POST updates existing shortURL
+app.post("/urls/:shortURL/update", (req, res) => {
+  urlDatabase[req.params.shortURL] = req.body.longURL;
+  res.redirect("/urls");
+});
+
+// POST deletes existing shortURL
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
