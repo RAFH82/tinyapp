@@ -117,7 +117,11 @@ app.get("/urls/:shortURL", (req, res) => {
 // redirect to long url
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+  if (longURL) {
+    res.redirect(longURL);
+  } else {
+    res.sendStatus(404).send("Link not found");
+  }
 });
 
 app.get("/urls.json", (req, res) => {
