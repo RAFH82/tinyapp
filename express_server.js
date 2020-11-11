@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 function generateRandomString() {
   const sourceArr = [
@@ -84,11 +85,13 @@ const urlDatabase = {
 };
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.set("view engine", "ejs");
 
 // GET If typed by mistake, redirect to url_index
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  res.render("urls_index", templateVars);
 });
 
 app.get("/urls.json", (req, res) => {
@@ -97,18 +100,20 @@ app.get("/urls.json", (req, res) => {
 
 // GET default urls from Database object
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
 
 // GET create new shortURL
 app.get("/urls_new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { username: req.cookies["username"] };
+  res.render("urls_new", templateVars);
 });
 
 // GET shows newly created shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
+    username: req.cookies["username"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
@@ -118,6 +123,7 @@ app.get("/urls/:shortURL", (req, res) => {
 // GET edit existing shortURL
 app.get("/urls/:shortURL/update", (req, res) => {
   const templateVars = {
+    username: req.cookies["username"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
@@ -139,6 +145,18 @@ app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
+});
+
+// POST username and assigns it to a cookie
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls");
+});
+
+// POST logout username
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect("/urls");
 });
 
 // POST updates existing shortURL
