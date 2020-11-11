@@ -4,16 +4,16 @@ const urlDatabase = {
 };
 
 const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+  "T123YZ": {
+    id: "T123YZ", 
+    email: "t123yz@example.com", 
+    password: "purple"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
-    password: "dishwasher-funk"
-  }
+ "123XYZ": {
+    id: "123XYZ", 
+    email: "123xyz@example.com", 
+    password: "dishwasher"
+  },
 }
 
 module.exports = { urlDatabase, users };
