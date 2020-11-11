@@ -3,86 +3,8 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
-function generateRandomString() {
-  const sourceArr = [
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
-  const indexOne = Math.floor(Math.random() * 63);
-  const indexTwo = Math.floor(Math.random() * 63);
-  const indexThree = Math.floor(Math.random() * 63);
-  const indexFour = Math.floor(Math.random() * 63);
-  const indexFive = Math.floor(Math.random() * 63);
-  const indexSix = Math.floor(Math.random() * 63);
-  let outputStr = `${sourceArr[indexOne]}${sourceArr[indexTwo]}${sourceArr[indexThree]}${sourceArr[indexFour]}${sourceArr[indexFive]}${sourceArr[indexSix]}`;
-  return outputStr;
-}
-
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xk": "http://www.google.com",
-};
+const { urlDatabase, users } = require("./data");
+const { generateRandomString } = require("./functions");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -90,7 +12,10 @@ app.set("view engine", "ejs");
 
 // GET If typed by mistake, redirect to url_index
 app.get("/", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = { 
+  urls: urlDatabase,
+  userId: req.cookies["userId"],
+  users: users};
   res.render("urls_index", templateVars);
 });
 
@@ -100,22 +25,40 @@ app.get("/urls.json", (req, res) => {
 
 // GET default urls from Database object
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = { 
+    urls: urlDatabase,
+    userId: req.cookies["userId"],
+    users: users
+  };
   res.render("urls_index", templateVars);
+});
+
+// GET register new user
+app.get("/register", (req, res) => {
+  const templateVars = { 
+    urls: urlDatabase,
+    userId: req.cookies["userId"],
+    users: users
+  };
+  res.render("register", templateVars);
 });
 
 // GET create new shortURL
 app.get("/urls_new", (req, res) => {
-  const templateVars = { username: req.cookies["username"] };
+  const templateVars = { 
+  userId: req.cookies["userId"],
+   users: users,
+  };
   res.render("urls_new", templateVars);
 });
 
 // GET shows newly created shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    userId: req.cookies["userId"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
+    users: users,
   };
   res.render("urls_show", templateVars);
 });
@@ -123,9 +66,10 @@ app.get("/urls/:shortURL", (req, res) => {
 // GET edit existing shortURL
 app.get("/urls/:shortURL/update", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    userId: req.cookies["userId"],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
+    users: users,
   };
   res.render("urls_show", templateVars);
 });
@@ -147,15 +91,27 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// POST new user's object to users object
+app.post('/register', (req, res) => {
+  const userId = generateRandomString();
+  users[userId] = {
+    id: userId, 
+    email: req.body.email, 
+    password: req.body.password,
+   };
+  res.cookie('userId', userId);
+  res.redirect("/urls");
+});
+
 // POST username and assigns it to a cookie
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  res.cookie("userId", req.body.userId);
   res.redirect("/urls");
 });
 
 // POST logout username
-app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+app.post("/logout", (req, res) => {
+  res.clearCookie("userId");
   res.redirect("/urls");
 });
 
