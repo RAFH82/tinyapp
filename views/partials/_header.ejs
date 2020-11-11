@@ -21,7 +21,7 @@
       </div>
     </div>
     <% if (userId) { %>
-      <p><h4 class="align-middle" style="color: white"><%= userId %></h4></p>
+      <p><h4 class="align-middle" style="color: white"><%= user['email'] %></h4></p>
     <div>
       <form class="form-inline" action="/logout" method="POST" style="display: table; margin: auto;">
         <input type="submit" value="Logout" class="btn btn-primary" style="margin: 10px"/>
