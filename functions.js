@@ -71,6 +71,17 @@ function generateRandomString() {
   const indexSix = Math.floor(Math.random() * 63);
   let outputStr = `${sourceArr[indexOne]}${sourceArr[indexTwo]}${sourceArr[indexThree]}${sourceArr[indexFour]}${sourceArr[indexFive]}${sourceArr[indexSix]}`;
   return outputStr;
-}
+};
 
-module.exports = { generateRandomString };
+function getUserByEmail(users, email) {
+  let returnUser = {};
+  for (let key in Object.keys(users)) {
+    if (users[key]['email'] === email) {
+      returnUser = users[key];
+    }
+  }
+  return returnUser;
+};
+
+
+module.exports = { generateRandomString, getUserByEmail };
