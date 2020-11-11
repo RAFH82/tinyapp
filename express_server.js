@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const { urlDatabase, users } = require("./data");
-const { generateRandomString } = require("./functions");
+const { generateRandomString, getUserByEmail } = require("./functions");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -87,11 +87,7 @@ app.get("/urls/:shortURL/update", (req, res) => {
 // Redirect to longURL
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
-  if (longURL) {
     res.redirect(longURL);
-  } else {
-    res.status(404).send("Error 404: link not found");
-  }
 });
 
 // Create new shortURL
@@ -103,12 +99,19 @@ app.post("/urls", (req, res) => {
 
 // Register
 app.post('/register', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
+    return res.status(400).send('Please enter a valid email/password');
+  } else { 
+    const userInfo = getUserByEmail(email, users);
+    if (Object.keys(userInfo.length > 0)) {
+      return res.status(400).send('User/Password already exists');
+    }
+  } 
   const userId = generateRandomString();
-  users[userId] = {
-    id: userId, 
-    email: req.body.email, 
-    password: req.body.password,
-   };
+  const id = userId;
+  users[userId] = { id, email, password, };
   res.cookie('userId', userId);
   res.redirect("/urls");
 });
