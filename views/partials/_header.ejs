@@ -15,10 +15,12 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls"><h5>My URLs</h5></a>
         <a class="nav-item nav-link" href="/urls_new"><h5>Create New URL</h5></a>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end navbar-nav" id="navbarNavAltMarkup">
         <% if (!userId) { %> 
-        <a class="nav-item nav-link" href="/register"><h5>Register</h5></a>
-        <a class="nav-item nav-link" href="/login"><h5>Login</h5></a>
-        <% } %>
+          <a class="nav-item nav-link" href="/register"><h5>Register</h5></a>
+          <a class="nav-item nav-link" href="/login"><h5>Login</h5></a>
+          <% } %>
       </div>
     </div>
     <% if (userId) { %>
