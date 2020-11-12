@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const { urlDatabase, users } = require("./data");
-const { generateRandomString, getUserByEmail } = require("./functions");
+const { generateRandomString, getUserByEmail, checkIfUserExists } = require("./functions");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -45,6 +45,7 @@ app.get("/login", (req, res) => {
   const currentUser = req.cookies["userId"];
   const templateVars = { 
     userId: currentUser,
+    user: users[currentUser],
   };
   res.render("login", templateVars);
 })
@@ -113,16 +114,17 @@ app.post('/register', (req, res) => {
   if (!email || !password) {
     return res.status(400).send('Please enter a valid email/password');
   } else { 
-    const userInfo = getUserByEmail(email, users);
-    if (Object.keys(userInfo.length > 0)) {
-      return res.status(400).send('User/Password already exists');
+    const userExists = checkIfUserExists(users, email);
+    if (userExists) {
+      return res.status(302).send('User/Password already exists');
+    } else if (!userExists) {
+      const userId = generateRandomString();
+      const id = userId;
+      users[userId] = { id, email, password, };
+      res.cookie('userId', userId);
+      res.redirect("/login");
     }
   } 
-  const userId = generateRandomString();
-  const id = userId;
-  users[userId] = { id, email, password, };
-  res.cookie('userId', userId);
-  res.redirect("/login");
 });
 
 // Login
@@ -133,9 +135,8 @@ app.post("/login", (req, res) => {
     return res.status(400).send('Please enter a valid email/password');
   } else {
     const userInfo = getUserByEmail(users, email);
-    if (Object.keys(userInfo.length > 0)) {
+    if (Object.keys(userInfo).length > 0) {
       if (password === userInfo['password']) {
-        console.log(password);
         res.cookie("userId", userInfo['id']);
         res.redirect("/urls");
       } else {
