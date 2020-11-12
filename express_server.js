@@ -184,12 +184,19 @@ app.post("/urls/:shortURL/update", (req, res) => {
 
 // Deletes existing shortURL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  // const currentUser = req.cookies['userId'];
-  // const shortUrl = req.params.shortURL;
-  // const urlUserId = urlDatabase[shortURL]['userId']
-  // if (currentUser) {}
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  const currentUser = req.cookies['userId'];
+  const shortURL = req.params.shortURL;
+  const urlUserId = urlDatabase[shortURL]['userId']
+  if (currentUser) { 
+    if (currentUser === urlUserId){
+      delete urlDatabase[req.params.shortURL];
+      res.redirect("/urls");
+    } else {
+      return res.status(403).send('Unauthorized');
+    } 
+  }
+  // delete urlDatabase[req.params.shortURL];
+  // res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
