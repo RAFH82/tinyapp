@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
@@ -10,7 +11,6 @@ const { generateRandomString, getUserByEmail, checkIfUserExists, getUrlsById } =
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
-
 app.set("view engine", "ejs");
 
 // Displays urlDatabase
@@ -143,6 +143,7 @@ app.post("/urls", (req, res) => {
 app.post('/register', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
   if (!email || !password) {
     return res.status(400).send('Please enter a valid email/password');
   } else { 
@@ -152,7 +153,8 @@ app.post('/register', (req, res) => {
     } else if (!userExists) {
       const userId = generateRandomString();
       const id = userId;
-      users[userId] = { id, email, password, };
+      users[userId] = { id, email, hashedPassword, };
+      console.log(users[userId]);
       res.cookie('userId', userId);
       res.redirect("/urls");
     }
@@ -168,7 +170,7 @@ app.post("/login", (req, res) => {
   } else {
     const userInfo = getUserByEmail(users, email);
     if (Object.keys(userInfo).length > 0) {
-      if (password === userInfo['password']) {
+      if (bcrypt.compareSync(password, userInfo['hashedPassword'])) {
         res.cookie("userId", userInfo['id']);
         res.redirect("/urls");
       } else {
