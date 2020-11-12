@@ -17,6 +17,7 @@
         <a class="nav-item nav-link" href="/urls_new"><h5>Create New URL</h5></a>
         <% if (!userId) { %> 
         <a class="nav-item nav-link" href="/register"><h5>Register</h5></a>
+        <a class="nav-item nav-link" href="/login"><h5>Login</h5></a>
         <% } %>
       </div>
     </div>
@@ -26,14 +27,6 @@
       <form class="form-inline" action="/logout" method="POST" style="display: table; margin: auto;">
         <input type="submit" value="Logout" class="btn btn-primary" style="margin: 10px"/>
         </form>
-    </div>
-    <% } else { %>
-    <div>
-      <form class="form-inline" action="/login" method="POST" style="display: table; margin: auto">
-        <label for="username"></label>
-        <input class="form-control" type="text" placeholder="Enter username" name="userId" style="width: 200px; margin: 1em"/>
-        <input type="submit" value="Login" class="btn btn-primary"/>
-      </form>
     </div>
     <% } %>
   </nav>
