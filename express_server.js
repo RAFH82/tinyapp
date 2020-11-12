@@ -122,7 +122,7 @@ app.post('/register', (req, res) => {
       const id = userId;
       users[userId] = { id, email, password, };
       res.cookie('userId', userId);
-      res.redirect("/login");
+      res.redirect("/urls");
     }
   } 
 });
@@ -140,8 +140,10 @@ app.post("/login", (req, res) => {
         res.cookie("userId", userInfo['id']);
         res.redirect("/urls");
       } else {
-        return res.status(403).send('Email/Password does not exist');
+        return res.status(400).send('Please enter a valid email/password');
       }
+    } else {
+      return res.status(403).send('Email/Password does not exist');
     }
   }
 });
