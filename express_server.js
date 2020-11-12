@@ -40,6 +40,15 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// Login
+app.get("/login", (req, res) => {
+  const currentUser = req.cookies["userId"];
+  const templateVars = { 
+    userId: currentUser,
+  };
+  res.render("login", templateVars);
+})
+
 // Register
 app.get("/register", (req, res) => {
   const currentUser = req.cookies["userId"];
@@ -113,19 +122,33 @@ app.post('/register', (req, res) => {
   const id = userId;
   users[userId] = { id, email, password, };
   res.cookie('userId', userId);
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 // Login
 app.post("/login", (req, res) => {
-  res.cookie("userId", req.body.userId);
-  res.redirect("/urls");
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
+    return res.status(400).send('Please enter a valid email/password');
+  } else {
+    const userInfo = getUserByEmail(users, email);
+    if (Object.keys(userInfo.length > 0)) {
+      if (password === userInfo['password']) {
+        console.log(password);
+        res.cookie("userId", userInfo['id']);
+        res.redirect("/urls");
+      } else {
+        return res.status(403).send('Email/Password does not exist');
+      }
+    }
+  }
 });
 
 // Logout
 app.post("/logout", (req, res) => {
   res.clearCookie("userId");
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 // Updates existing shortURL
