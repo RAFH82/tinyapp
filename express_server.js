@@ -18,7 +18,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-// REDIRECTS TO URLS
+// Home
 app.get("/", (req, res) => {
   const currentUser = req.cookies["userId"];
   const templateVars = { 
@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
     userId: currentUser,
     user: users[currentUser]
   };
-  res.render("urls_index", templateVars);
+    res.render("urls_index", templateVars);
 });
 
 // Home
@@ -37,7 +37,7 @@ app.get("/urls", (req, res) => {
     userId: currentUser,
     user: users[currentUser]
   };
-  res.render("urls_index", templateVars);
+    res.render("urls_index", templateVars);
 });
 
 // Login
@@ -62,12 +62,16 @@ app.get("/register", (req, res) => {
 // Create new shortURL
 app.get("/urls_new", (req, res) => {
   const currentUser = req.cookies["userId"];
-  const templateVars = {
-    urls: urlDatabase,
-    userId: currentUser,
-    user: users[currentUser]
-  };
-  res.render("urls_new", templateVars);
+  if (currentUser) {
+    const templateVars = {
+      urls: urlDatabase,
+      userId: currentUser,
+      user: users[currentUser]
+    };
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 // Display new shortURL
