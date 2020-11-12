@@ -1,3 +1,4 @@
+// Generates random 6 digit string for userId 
 function generateRandomString() {
   const sourceArr = [
     "0",
@@ -73,15 +74,16 @@ function generateRandomString() {
   return outputStr;
 };
 
+// Returns User object from Users database
 function getUserByEmail(users, email) {
   let returnUser = {};
-  for (let key in Object.keys(users)) {
+  for (let key of Object.keys(users)) {
     if (users[key]['email'] === email) {
       returnUser = users[key];
+      return returnUser;
     }
   }
   return returnUser;
 };
-
 
 module.exports = { generateRandomString, getUserByEmail };
