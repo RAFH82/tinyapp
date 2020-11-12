@@ -81,9 +81,18 @@ function getUserByEmail(users, email) {
     if (users[key]['email'] === email) {
       returnUser = users[key];
       return returnUser;
-    }
+    } 
   }
   return returnUser;
 };
 
-module.exports = { generateRandomString, getUserByEmail };
+function checkIfUserExists(users, email) {
+  for (let key of Object.keys(users)) {
+    if (users[key]['email'] === email) {
+      return true;
+    } 
+  }
+  return false;
+};
+
+module.exports = { generateRandomString, getUserByEmail, checkIfUserExists };
