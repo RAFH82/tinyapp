@@ -21,12 +21,22 @@ app.get("/urls.json", (req, res) => {
 // Home
 app.get("/", (req, res) => {
   const currentUser = req.cookies["userId"];
-  const templateVars = { 
-    urls: urlDatabase,
-    userId: currentUser,
-    user: users[currentUser]
-  };
-    res.render("urls_index", templateVars);
+  if (currentUser) {
+    const userUrls = getUrlsById(urlDatabase, currentUser);
+    const templateVars = { 
+      urls: userUrls,
+      userId: currentUser,
+      user: users[currentUser]
+    };
+  res.render("urls_index", templateVars);
+  } else {
+    const templateVars = { 
+      urls: '',
+      userId: '',
+      user: '',
+    };
+  res.render("urls_index", templateVars);
+  }
 });
 
 // Home
@@ -173,7 +183,7 @@ app.post("/login", (req, res) => {
 // Logout
 app.post("/logout", (req, res) => {
   res.clearCookie("userId");
-  res.redirect("/login");
+  res.redirect("urls");
 });
 
 // Updates existing shortURL
@@ -192,7 +202,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
       delete urlDatabase[req.params.shortURL];
       res.redirect("/urls");
     } else {
-      return res.status(403).send('Unauthorized');
+      return res.status(401).send('Unauthorized');
     } 
   }
   // delete urlDatabase[req.params.shortURL];
