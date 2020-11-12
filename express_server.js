@@ -156,7 +156,7 @@ app.post("/login", (req, res) => {
 // Logout
 app.post("/logout", (req, res) => {
   res.clearCookie("userId");
-  res.redirect("/login");
+  res.redirect("urls");
 });
 
 // Updates existing shortURL
