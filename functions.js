@@ -95,4 +95,17 @@ function checkIfUserExists(users, email) {
   return false;
 };
 
-module.exports = { generateRandomString, getUserByEmail, checkIfUserExists };
+function getUrlsById(urlDatabase, userId) {
+  let returnObject = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url]['userId'] === userId) {
+      returnObject[url] = {
+        longURL: urlDatabase[url]['longURL'],
+        userId: urlDatabase[url]['userId'],
+      };
+    }
+  }
+  return returnObject;
+};
+
+module.exports = { generateRandomString, getUserByEmail, checkIfUserExists, getUrlsById };
