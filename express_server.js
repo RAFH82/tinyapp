@@ -34,7 +34,6 @@ app.get("/urls", (req, res) => {
   const currentUser = req.cookies["userId"];
   if (currentUser) {
     const userUrls = getUrlsById(urlDatabase, currentUser);
-    console.log(userUrls);
     const templateVars = { 
       urls: userUrls,
       userId: currentUser,
