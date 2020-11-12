@@ -196,17 +196,13 @@ app.post("/urls/:shortURL/update", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   const currentUser = req.cookies['userId'];
   const shortURL = req.params.shortURL;
-  const urlUserId = urlDatabase[shortURL]['userId']
-  if (currentUser) { 
-    if (currentUser === urlUserId){
-      delete urlDatabase[req.params.shortURL];
-      res.redirect("/urls");
+  const urlUserId = urlDatabase[shortURL]['userId'] 
+  if (currentUser === urlUserId) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
     } else {
-      return res.status(401).send('Unauthorized');
-    } 
+    return res.status(401).send("Error code 401: Unauthorized Access");
   }
-  // delete urlDatabase[req.params.shortURL];
-  // res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
