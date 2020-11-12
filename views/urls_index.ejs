@@ -32,7 +32,8 @@
           <% for(let url in urls) { %>
           <tr>
             <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= urls[url]['longURL'] %></td>
+            <% if (urls[url]['userId'] === userId) { %>
             <td>
               <form method="GET" action="/urls/<%= url %>/update">
                 <input type="submit" value="Edit" class="btn btn-outline-primary" />
@@ -43,6 +44,18 @@
                 <input type="submit" value="Delete" class="btn btn-outline-danger" />
               </form>
             </td>
+            <% } else { %>
+              <td>
+                <form>
+                  <button type="button" class="btn btn-outline-light"></button>
+                </form>
+              </td>
+              <td>
+                <form>
+                  <button type="button" class="btn btn-outline-light"></button>
+                </form>
+              </td>
+              <% } %>
           </tr>
           <% } %>
         </tbody>
