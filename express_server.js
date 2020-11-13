@@ -126,9 +126,9 @@ app.get("/urls/:shortURL", (req, res) => {
       urlUserId: urlDatabase[shortURL]['userId'],
       user: users[currentUser],
     };
-    res.render("urls_show", templateVars);
+    return res.render("urls_show", templateVars);
   } else {
-    } res.render('Error404');
+    } res.redirect('Error404');
 });
 
 // Redirect to longURL
@@ -138,19 +138,20 @@ app.get("/u/:shortURL", (req, res) => {
     const longURL = urlDatabase[req.params.shortURL]['longURL'];
     res.redirect(longURL);
   } else {
-    res.render('Error404');
+    res.redirect('Error404');
   }
 });
 
 // Create new shortURL
 app.post("/urls", (req, res) => {
   const currentUser = req.session.userId;
-  if (!currentUser) {
-    res.render("Error401");
-  }
-  const shortURL = generateRandomString();
+  if (currentUser) {
+    const shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL: req.body.longURL, userId: currentUser };
   res.redirect(`/urls/${shortURL}`);
+  } else {
+    return res.render("Error401");
+  }
 });
 
 // Register
@@ -202,6 +203,7 @@ app.post("/login", (req, res) => {
 // Logout
 app.post("/logout", (req, res) => {
   req.session.userId = null;
+  // req.session.loggedinat = null;
   res.redirect("urls");
 });
 
