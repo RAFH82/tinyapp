@@ -4,7 +4,6 @@ const PORT = 8080; // default port 8080
 const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
-const morgan = require("morgan");
 const { urlDatabase, users } = require("./data");
 const { generateRandomString, getUserByEmail, checkIfUserExists, getUrlsById } = require("./functions");
 
@@ -13,7 +12,7 @@ app.use(cookieSession({
   name: 'session',
   keys: ["onekey"],
 }));
-app.use(morgan('dev'));
+
 app.set("view engine", "ejs");
 
 // Home
