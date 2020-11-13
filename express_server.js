@@ -144,11 +144,12 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Create new shortURL
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
-  console.log('here is the shorturl', shortURL);
   const currentUser = req.session.userId;
+  if (!currentUser) {
+    res.render("Error401");
+  }
+  const shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL: req.body.longURL, userId: currentUser };
-  console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -201,7 +202,6 @@ app.post("/login", (req, res) => {
 // Logout
 app.post("/logout", (req, res) => {
   req.session.userId = null;
-  // req.session.loggedinat = null;
   res.redirect("urls");
 });
 
