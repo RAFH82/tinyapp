@@ -64,12 +64,12 @@ function generateRandomString() {
     "Y",
     "Z",
   ];
-  const indexOne = Math.floor(Math.random() * 63);
-  const indexTwo = Math.floor(Math.random() * 63);
-  const indexThree = Math.floor(Math.random() * 63);
-  const indexFour = Math.floor(Math.random() * 63);
-  const indexFive = Math.floor(Math.random() * 63);
-  const indexSix = Math.floor(Math.random() * 63);
+  const indexOne = Math.floor(Math.random() * (62 - 0) + 0);
+  const indexTwo = Math.floor(Math.random() * (62 - 0) + 0);
+  const indexThree = Math.floor(Math.random() * (62 - 0) + 0);
+  const indexFour = Math.floor(Math.random() * (62 - 0) + 0);
+  const indexFive = Math.floor(Math.random() * (62 - 0) + 0);
+  const indexSix = Math.floor(Math.random() * (62 - 0) + 0);
   let outputStr = `${sourceArr[indexOne]}${sourceArr[indexTwo]}${sourceArr[indexThree]}${sourceArr[indexFour]}${sourceArr[indexFive]}${sourceArr[indexSix]}`;
   return outputStr;
 };
