@@ -203,14 +203,22 @@ app.post("/login", (req, res) => {
 // Logout
 app.post("/logout", (req, res) => {
   req.session.userId = null;
-  // req.session.loggedinat = null;
   res.redirect("urls");
 });
 
 // Updates existing shortURL
 app.post("/urls/:shortURL/update", (req, res) => {
-  urlDatabase[req.params.shortURL]['longURL'] = req.body.longURL;
-  res.redirect("/urls");
+  // urlDatabase[req.params.shortURL]['longURL'] = req.body.longURL;
+  // res.redirect("/urls");
+  const currentUser = req.session.userId;
+  const shortURL = req.params.shortURL;
+  const urlUserId = urlDatabase[shortURL]['userId']
+  if (currentUser === urlUserId) {
+    urlDatabase[req.params.shortURL]['longURL'] = req.body.longURL;
+    res.redirect("/urls");
+  } else {
+    return res.status(401).send("Error code 401: Unauthorized Access");
+  }
 });
 
 // Deletes existing shortURL
