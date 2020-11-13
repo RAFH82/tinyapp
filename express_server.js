@@ -117,8 +117,8 @@ app.get("/urls/:shortURL", (req, res) => {
   const currentUser = req.session.userId;
   const shortURL = req.params.shortURL;
   if (!currentUser) {
-    res.redirect("/urls");
-  } else {
+    res.render("Error401");
+  } if (urlDatabase[req.params.shortURL]) {
     const templateVars = {
       userId: currentUser,
       shortURL: req.params.shortURL,
@@ -127,13 +127,19 @@ app.get("/urls/:shortURL", (req, res) => {
       user: users[currentUser],
     };
     res.render("urls_show", templateVars);
-  }
+  } else {
+    } res.render('Error404');
 });
 
 // Redirect to longURL
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL]['longURL'];
-  res.redirect(longURL);
+  // const longURL = urlDatabase[req.params.shortURL]['longURL'];
+  if (urlDatabase[req.params.shortURL]) {
+    const longURL = urlDatabase[req.params.shortURL]['longURL'];
+    res.redirect(longURL);
+  } else {
+    res.render('Error404');
+  }
 });
 
 // Create new shortURL
