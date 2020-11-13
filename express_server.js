@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
   keys: ["onekey"],
-  maxAge: 24 * 60 * 60 * 1000, // keeps alive for 24hrs
+  // maxAge: 24 * 60 * 60 * 1000, // keeps alive for 24hrs
 }));
 app.use(morgan('dev'));
 app.set("view engine", "ejs");
@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
       user: users[currentUser]
     };
     res.render("urls_index", templateVars);
-  } else {
+  } else { // need this for userId check in _header.ejs partial, otherwise it errors with userId is not defined
     const templateVars = {
       urls: '',
       userId: '',
@@ -56,7 +56,7 @@ app.get("/urls", (req, res) => {
       user: users[currentUser]
     };
     res.render("urls_index", templateVars);
-  } else {
+  } else { // need this for userId check in _header.ejs partial, otherwise it errors with userId is not defined
     const templateVars = {
       urls: '',
       userId: '',
@@ -96,21 +96,21 @@ app.get("/urls_new", (req, res) => {
     };
     res.render("urls_new", templateVars);
   } else {
-    res.redirect("/login");
+    res.render("Error401");
   }
 });
 
 // Edit existing shortURL
-app.get("/urls/:shortURL/update", (req, res) => {
-  const currentUser = req.session.userId;
-  const templateVars = {
-    userId: currentUser,
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]['longURL'],
-    user: users[currentUser],
-  };
-  res.render("urls_show", templateVars);
-});
+// app.get("/urls/:shortURL/update", (req, res) => {
+//   const currentUser = req.session.userId;
+//   const templateVars = {
+//     userId: currentUser,
+//     shortURL: req.params.shortURL,
+//     longURL: urlDatabase[req.params.shortURL]['longURL'],
+//     user: users[currentUser],
+//   };
+//   res.render("urls_show", templateVars);
+// });
 
 // Display new shortURL
 app.get("/urls/:shortURL", (req, res) => {
@@ -139,6 +139,7 @@ app.get("/u/:shortURL", (req, res) => {
 // Create new shortURL
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
+  console.log('here is the shorturl', shortURL);
   const currentUser = req.session.userId;
   urlDatabase[shortURL] = { longURL: req.body.longURL, userId: currentUser };
   console.log(urlDatabase);
@@ -158,6 +159,7 @@ app.post('/register', (req, res) => {
       return res.status(302).send('User/Password already exists');
     } else {
       const userId = generateRandomString();
+      console.log("here is the randomString", userId);
       const id = userId;
       users[userId] = { id, email, hashedPassword, };
       console.log("Here is the user", users[userId]);
