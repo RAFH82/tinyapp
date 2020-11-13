@@ -79,8 +79,18 @@ app.get("/login", (req, res) => {
 // Register
 app.get("/register", (req, res) => {
   const currentUser = req.session.userId;
+  if (currentUser) {
+    const userUrls = getUrlsById(urlDatabase, currentUser);
+    const templateVars = {
+      urls: userUrls,
+      userId: currentUser,
+      user: users[currentUser]
+    };
+    return res.render("urls_index", templateVars);
+  }
   const templateVars = {
     userId: currentUser,
+    user: users[currentUser],
   };
   res.render("register", templateVars);
 });
