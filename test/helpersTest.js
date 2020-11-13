@@ -29,7 +29,7 @@ describe('getUserByEmail', function() {
 
   it('should return an empty object with an invalid email', function() {
     const user = getUserByEmail(users, "im-not-here@missing.com")
-    const expectedOutput = {};
+    const expectedOutput = undefined;
     
     assert.deepEqual(user, expectedOutput);
   });
