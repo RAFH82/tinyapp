@@ -176,7 +176,7 @@ app.post("/login", (req, res) => {
     return res.status(400).send('Please enter a valid email/password');
   } else {
     const userInfo = getUserByEmail(users, email);
-    if (Object.keys(userInfo).length > 0) {
+    if (userInfo) {
       if (bcrypt.compareSync(password, userInfo['hashedPassword'])) {
         req.session.userId = userInfo['id'];
         console.log("here is the login session cookie", req.session.userId);
