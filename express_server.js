@@ -3,18 +3,15 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
-// const cookieParser = require("cookie-parser");
 const cookieSession = require("cookie-session");
 const morgan = require("morgan");
 const { urlDatabase, users } = require("./data");
 const { generateRandomString, getUserByEmail, checkIfUserExists, getUrlsById } = require("./functions");
 
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ["onekey"],
-  // maxAge: 24 * 60 * 60 * 1000, // keeps alive for 24hrs
 }));
 app.use(morgan('dev'));
 app.set("view engine", "ejs");
@@ -109,18 +106,6 @@ app.get("/urls_new", (req, res) => {
     res.render("Error401");
   }
 });
-
-// Edit existing shortURL
-// app.get("/urls/:shortURL/update", (req, res) => {
-//   const currentUser = req.session.userId;
-//   const templateVars = {
-//     userId: currentUser,
-//     shortURL: req.params.shortURL,
-//     longURL: urlDatabase[req.params.shortURL]['longURL'],
-//     user: users[currentUser],
-//   };
-//   res.render("urls_show", templateVars);
-// });
 
 // Display new shortURL
 app.get("/urls/:shortURL", (req, res) => {
