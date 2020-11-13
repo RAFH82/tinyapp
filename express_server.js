@@ -152,8 +152,7 @@ app.post('/register', (req, res) => {
   const hashedPassword = bcrypt.hashSync(password, 10);
   if (!email || !password) {
     return res.status(400).send('Please enter a valid email/password');
-  }
-  else {
+  } else {
     const userExists = checkIfUserExists(users, email);  // returns Boolean
     if (userExists) {
       return res.status(302).send('User/Password already exists');
@@ -162,7 +161,6 @@ app.post('/register', (req, res) => {
       const id = userId;
       users[userId] = { id, email, hashedPassword, };
       console.log("Here is the user", users[userId]);
-      // res.cookie('userId', userId);
       req.session.userId = userId;
       console.log("here is the reg.session cookie", req.session.userId);
       res.redirect("/urls");
