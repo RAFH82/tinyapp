@@ -83,7 +83,7 @@ function getUserByEmail(users, email) {
       return returnUser;
     } 
   }
-  return returnUser;
+  return undefined;
 };
 
 function checkIfUserExists(users, email) {
