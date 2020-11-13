@@ -16,11 +16,6 @@ app.use(cookieSession({
 app.use(morgan('dev'));
 app.set("view engine", "ejs");
 
-// Displays urlDatabase
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
 // Home
 app.get("/", (req, res) => {
   const currentUser = req.session.userId;
@@ -162,12 +157,9 @@ app.post('/register', (req, res) => {
       return res.status(302).send('User/Password already exists');
     } else {
       const userId = generateRandomString();
-      console.log("here is the randomString", userId);
       const id = userId;
       users[userId] = { id, email, hashedPassword, };
-      console.log("Here is the user", users[userId]);
       req.session.userId = userId;
-      console.log("here is the reg.session cookie", req.session.userId);
       res.redirect("/urls");
     }
   }
@@ -184,7 +176,6 @@ app.post("/login", (req, res) => {
     if (userInfo) {
       if (bcrypt.compareSync(password, userInfo['hashedPassword'])) {
         req.session.userId = userInfo['id'];
-        console.log("here is the login session cookie", req.session.userId);
         res.redirect("/urls");
       } else {
         return res.status(400).send('Please enter a valid email/password');
