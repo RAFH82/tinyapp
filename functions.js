@@ -1,5 +1,6 @@
 // Generates random 6 digit string for userId
 function generateRandomString() {
+  let text = "";
   const sourceArr = [
     "0",
     "1",
