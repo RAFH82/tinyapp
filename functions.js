@@ -1,4 +1,4 @@
-// Generates random 6 digit string for userId 
+// Generates random 6 digit string for userId
 function generateRandomString() {
   const sourceArr = [
     "0",
@@ -64,48 +64,49 @@ function generateRandomString() {
     "Y",
     "Z",
   ];
-  const indexOne = Math.floor(Math.random() * (62 - 0) + 0);
-  const indexTwo = Math.floor(Math.random() * (62 - 0) + 0);
-  const indexThree = Math.floor(Math.random() * (62 - 0) + 0);
-  const indexFour = Math.floor(Math.random() * (62 - 0) + 0);
-  const indexFive = Math.floor(Math.random() * (62 - 0) + 0);
-  const indexSix = Math.floor(Math.random() * (62 - 0) + 0);
-  let outputStr = `${sourceArr[indexOne]}${sourceArr[indexTwo]}${sourceArr[indexThree]}${sourceArr[indexFour]}${sourceArr[indexFive]}${sourceArr[indexSix]}`;
-  return outputStr;
-};
+  for (let i = 0; i < 7; i++) {
+    text += sourceArr[Math.floor(Math.random() * sourceArr.length)];
+  }
+  return text;
+}
 
 // Returns User object from Users database
 function getUserByEmail(users, email) {
   let returnUser = {};
   for (let key of Object.keys(users)) {
-    if (users[key]['email'] === email) {
+    if (users[key]["email"] === email) {
       returnUser = users[key];
       return returnUser;
-    } 
+    }
   }
   return undefined;
-};
+}
 
 function checkIfUserExists(users, email) {
   for (let key of Object.keys(users)) {
-    if (users[key]['email'] === email) {
+    if (users[key]["email"] === email) {
       return true;
-    } 
+    }
   }
   return false;
-};
+}
 
 function getUrlsById(urlDatabase, userId) {
   let returnObject = {};
   for (let url in urlDatabase) {
-    if (urlDatabase[url]['userId'] === userId) {
+    if (urlDatabase[url]["userId"] === userId) {
       returnObject[url] = {
-        longURL: urlDatabase[url]['longURL'],
-        userId: urlDatabase[url]['userId'],
+        longURL: urlDatabase[url]["longURL"],
+        userId: urlDatabase[url]["userId"],
       };
     }
   }
   return returnObject;
-};
+}
 
-module.exports = { generateRandomString, getUserByEmail, checkIfUserExists, getUrlsById };
+module.exports = {
+  generateRandomString,
+  getUserByEmail,
+  checkIfUserExists,
+  getUrlsById,
+};
